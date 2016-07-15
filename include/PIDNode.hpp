@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <Core/MW/Publisher.hpp>
-#include <Core/MW/Subscriber.hpp>
-#include <Core/MW/CoreNode.hpp>
-#include <Core/MW/Callback.hpp>
+#include <core/mw/Publisher.hpp>
+#include <core/mw/Subscriber.hpp>
+#include <core/mw/CoreNode.hpp>
+#include <core/mw/Callback.hpp>
 
 #include <Configuration.hpp>
 
@@ -18,50 +18,50 @@
 #include <pid/PID.hpp>
 
 namespace pid {
-   class PIDNode:
-      public Core::MW::CoreNode,
-                       PID
-   {
+class PIDNode:
+   public core::mw::CoreNode,
+                    PID
+{
 public:
-      PIDNode(
-         const char*                    name,
-         Core::MW::Thread::PriorityEnum priority = Core::MW::Thread::PriorityEnum::NORMAL
-      );
-      virtual
-      ~PIDNode();
+   PIDNode(
+      const char*                name,
+      core::os::Thread::Priority priority = core::os::Thread::PriorityEnum::NORMAL
+   );
+   virtual
+   ~PIDNode();
 
 public:
-      PIDNodeConfiguration configuration;
+   PIDNodeConfiguration configuration;
 
 private:
-      bool
-      onConfigure();
+   bool
+   onConfigure();
 
-      bool
-      onPrepareMW();
+   bool
+   onPrepareMW();
 
-      bool
-      onLoop();
+   bool
+   onLoop();
 
-      static bool
-      setpoint_callback(
-         const common_msgs::Float32& msg,
-         Core::MW::Node*             node
-      );
+   static bool
+   setpoint_callback(
+      const common_msgs::Float32& msg,
+      core::mw::Node*             node
+   );
 
-      static bool
-      measure_callback(
-         const common_msgs::Float32& msg,
-         Core::MW::Node*             node
-      );
+   static bool
+   measure_callback(
+      const common_msgs::Float32& msg,
+      core::mw::Node*             node
+   );
 
 
 private:
-      Core::MW::Subscriber<common_msgs::Float32, 5> _setpoint_subscriber;
-      Core::MW::Subscriber<common_msgs::Float32, 5> _measure_subscriber;
-      Core::MW::Publisher<common_msgs::Float32>     _output_publisher;
-      float _setpoint;
-      Core::MW::Time _setpoint_timestamp;
-      float          _measure;
-   };
+   core::mw::Subscriber<common_msgs::Float32, 5> _setpoint_subscriber;
+   core::mw::Subscriber<common_msgs::Float32, 5> _measure_subscriber;
+   core::mw::Publisher<common_msgs::Float32>     _output_publisher;
+   float _setpoint;
+   core::os::Time _setpoint_timestamp;
+   float          _measure;
+};
 }

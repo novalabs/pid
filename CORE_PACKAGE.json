@@ -1,5 +1,5 @@
 {
   "name": "pid",
-  "namespace": "@",
-  "description": "PID controller"
+  "description": "PID controller",
+  "provider": "core"
 }

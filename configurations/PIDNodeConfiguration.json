@@ -1,7 +1,7 @@
 {
   "name": "PIDNodeConfiguration",
   "description": "PID node configuration",
-  "namespace": "pid",
+  "namespace": "@",
   "fields": [
     {
       "name": "setpoint_topic",
