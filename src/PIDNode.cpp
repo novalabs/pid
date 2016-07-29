@@ -6,9 +6,9 @@
 
 #include <Module.hpp>
 
-#include <pid/PIDNode.hpp>
-#include <Core/Utils/Math/Constants.hpp>
-#include <Core/Utils/Math/Conversions.hpp>
+#include <core/pid/PIDNode.hpp>
+#include <core/utils/math/Constants.hpp>
+#include <core/utils/math/Conversions.hpp>
 
 namespace pid {
 PIDNode::PIDNode(
@@ -52,12 +52,12 @@ PIDNode::onPrepareMW()
 bool
 PIDNode::onLoop()
 {
-   if (!this->spin(Configuration::SUBSCRIBER_SPIN_TIME)) {
+   if (!this->spin(ModuleConfiguration::SUBSCRIBER_SPIN_TIME)) {
       Module::led.toggle();
    }
 
    if ((this->_setpoint_timestamp + configuration.timeout) > core::os::Time::now()) {
-      common_msgs::Float32* msgp;
+      core::common_msgs::Float32* msgp;
 
       if (_output_publisher.alloc(msgp)) {
          msgp->value = configuration.idle;
@@ -70,7 +70,7 @@ PIDNode::onLoop()
 
 bool
 PIDNode::setpoint_callback(
-   const common_msgs::Float32& msg,
+   const core::common_msgs::Float32& msg,
    core::mw::Node*             node
 )
 {
@@ -85,12 +85,12 @@ PIDNode::setpoint_callback(
 
 bool
 PIDNode::measure_callback(
-   const common_msgs::Float32& msg,
+   const core::common_msgs::Float32& msg,
    Node*                       node
 )
 {
    PIDNode* _this = static_cast<PIDNode*>(node);
-   common_msgs::Float32* msgp;
+   core::common_msgs::Float32* msgp;
 
    _this->_measure = msg.value;
 

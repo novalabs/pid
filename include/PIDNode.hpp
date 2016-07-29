@@ -9,13 +9,13 @@
 #include <core/mw/Publisher.hpp>
 #include <core/mw/Subscriber.hpp>
 #include <core/mw/CoreNode.hpp>
-#include <core/mw/Callback.hpp>
+#include <core/os/Callback.hpp>
 
-#include <Configuration.hpp>
+#include <ModuleConfiguration.hpp>
 
-#include <common_msgs/Float32.hpp>
-#include <pid/PIDNodeConfiguration.hpp>
-#include <pid/PID.hpp>
+#include <core/common_msgs/Float32.hpp>
+#include <core/pid/PIDNodeConfiguration.hpp>
+#include <core/pid/PID.hpp>
 
 namespace pid {
 class PIDNode:
@@ -31,7 +31,7 @@ public:
    ~PIDNode();
 
 public:
-   PIDNodeConfiguration configuration;
+   core::pid::PIDNodeConfiguration configuration;
 
 private:
    bool
@@ -45,21 +45,21 @@ private:
 
    static bool
    setpoint_callback(
-      const common_msgs::Float32& msg,
+      const core::common_msgs::Float32& msg,
       core::mw::Node*             node
    );
 
    static bool
    measure_callback(
-      const common_msgs::Float32& msg,
+      const core::common_msgs::Float32& msg,
       core::mw::Node*             node
    );
 
 
 private:
-   core::mw::Subscriber<common_msgs::Float32, 5> _setpoint_subscriber;
-   core::mw::Subscriber<common_msgs::Float32, 5> _measure_subscriber;
-   core::mw::Publisher<common_msgs::Float32>     _output_publisher;
+   core::mw::Subscriber<core::common_msgs::Float32, 5> _setpoint_subscriber;
+   core::mw::Subscriber<core::common_msgs::Float32, 5> _measure_subscriber;
+   core::mw::Publisher<core::common_msgs::Float32>     _output_publisher;
    float _setpoint;
    core::os::Time _setpoint_timestamp;
    float          _measure;
