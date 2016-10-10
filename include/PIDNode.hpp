@@ -46,13 +46,13 @@ private:
    static bool
    setpoint_callback(
       const core::common_msgs::Float32& msg,
-      core::mw::Node*             node
+      void*                             context
    );
 
    static bool
    measure_callback(
       const core::common_msgs::Float32& msg,
-      core::mw::Node*             node
+      void*                             context
    );
 
 

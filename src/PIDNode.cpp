@@ -71,10 +71,10 @@ PIDNode::onLoop()
 bool
 PIDNode::setpoint_callback(
    const core::common_msgs::Float32& msg,
-   core::mw::Node*             node
+   void*                             context
 )
 {
-   PIDNode* _this = static_cast<PIDNode*>(node);
+   PIDNode* _this = static_cast<PIDNode*>(context);
 
    _this->_setpoint = msg.value;
    _this->_setpoint_timestamp = core::os::Time::now();
@@ -86,10 +86,10 @@ PIDNode::setpoint_callback(
 bool
 PIDNode::measure_callback(
    const core::common_msgs::Float32& msg,
-   Node*                       node
+   void*                             context
 )
 {
-   PIDNode* _this = static_cast<PIDNode*>(node);
+   PIDNode* _this = static_cast<PIDNode*>(context);
    core::common_msgs::Float32* msgp;
 
    _this->_measure = msg.value;
