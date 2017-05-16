@@ -12,93 +12,93 @@
 
 namespace pid {
 PIDNode::PIDNode(
-   const char*                name,
-   core::os::Thread::Priority priority
+    const char*                name,
+    core::os::Thread::Priority priority
 ) :
-   CoreNode::CoreNode(name, priority),
-   _setpoint(0),
-   _measure(0)
+    CoreNode::CoreNode(name, priority),
+    _setpoint(0),
+    _measure(0)
 {
-   _workingAreaSize = 512;
+    _workingAreaSize = 512;
 }
 
 PIDNode::~PIDNode()
 {
-   teardown();
+    teardown();
 }
 
 bool
 PIDNode::onConfigure()
 {
-   config(configuration.kp, configuration.ti, configuration.td, configuration.ts, configuration.min, configuration.max);
+    config(configuration.kp, configuration.ti, configuration.td, configuration.ts, configuration.min, configuration.max);
 
-   return true;
+    return true;
 }
 
 bool
 PIDNode::onPrepareMW()
 {
-   _setpoint_subscriber.set_callback(PIDNode::setpoint_callback);
-   _measure_subscriber.set_callback(PIDNode::measure_callback);
+    _setpoint_subscriber.set_callback(PIDNode::setpoint_callback);
+    _measure_subscriber.set_callback(PIDNode::measure_callback);
 
-   this->subscribe(_setpoint_subscriber, configuration.setpoint_topic);
-   this->subscribe(_measure_subscriber, configuration.measure_topic);
+    this->subscribe(_setpoint_subscriber, configuration.setpoint_topic);
+    this->subscribe(_measure_subscriber, configuration.measure_topic);
 
-   this->advertise(_output_publisher, configuration.output_topic);
+    this->advertise(_output_publisher, configuration.output_topic);
 
-   return true;
+    return true;
 }
 
 bool
 PIDNode::onLoop()
 {
-   if (!this->spin(ModuleConfiguration::SUBSCRIBER_SPIN_TIME)) {
-      Module::led.toggle();
-   }
+    if (!this->spin(ModuleConfiguration::SUBSCRIBER_SPIN_TIME)) {
+        Module::led.toggle();
+    }
 
-   if ((this->_setpoint_timestamp + configuration.timeout) > core::os::Time::now()) {
-      core::common_msgs::Float32* msgp;
+    if ((this->_setpoint_timestamp + configuration.timeout) > core::os::Time::now()) {
+        core::common_msgs::Float32* msgp;
 
-      if (_output_publisher.alloc(msgp)) {
-         msgp->value = configuration.idle;
-         _output_publisher.publish(*msgp);
-      }
-   }
+        if (_output_publisher.alloc(msgp)) {
+            msgp->value = configuration.idle;
+            _output_publisher.publish(*msgp);
+        }
+    }
 
-   return true;
+    return true;
 }    // PID::onLoop
 
 bool
 PIDNode::setpoint_callback(
-   const core::common_msgs::Float32& msg,
-   void*                             context
+    const core::common_msgs::Float32& msg,
+    void*                             context
 )
 {
-   PIDNode* _this = static_cast<PIDNode*>(context);
+    PIDNode* _this = static_cast<PIDNode*>(context);
 
-   _this->_setpoint = msg.value;
-   _this->_setpoint_timestamp = core::os::Time::now();
-   _this->set(_this->_setpoint);
+    _this->_setpoint = msg.value;
+    _this->_setpoint_timestamp = core::os::Time::now();
+    _this->set(_this->_setpoint);
 
-   return true;
+    return true;
 }
 
 bool
 PIDNode::measure_callback(
-   const core::common_msgs::Float32& msg,
-   void*                             context
+    const core::common_msgs::Float32& msg,
+    void*                             context
 )
 {
-   PIDNode* _this = static_cast<PIDNode*>(context);
-   core::common_msgs::Float32* msgp;
+    PIDNode* _this = static_cast<PIDNode*>(context);
+    core::common_msgs::Float32* msgp;
 
-   _this->_measure = msg.value;
+    _this->_measure = msg.value;
 
-   if (_this->_output_publisher.alloc(msgp)) {
-      msgp->value = _this->update(_this->_measure);
-      _this->_output_publisher.publish(*msgp);
-   }
+    if (_this->_output_publisher.alloc(msgp)) {
+        msgp->value = _this->update(_this->_measure);
+        _this->_output_publisher.publish(*msgp);
+    }
 
-   return true;
+    return true;
 }
 }

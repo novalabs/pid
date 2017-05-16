@@ -19,49 +19,49 @@
 
 namespace pid {
 class PIDNode:
-   public core::mw::CoreNode,
-                    PID
+    public core::mw::CoreNode,
+                     PID
 {
 public:
-   PIDNode(
-      const char*                name,
-      core::os::Thread::Priority priority = core::os::Thread::PriorityEnum::NORMAL
-   );
-   virtual
-   ~PIDNode();
+    PIDNode(
+        const char*                name,
+        core::os::Thread::Priority priority = core::os::Thread::PriorityEnum::NORMAL
+    );
+    virtual
+    ~PIDNode();
 
 public:
-   core::pid::PIDNodeConfiguration configuration;
+    core::pid::PIDNodeConfiguration configuration;
 
 private:
-   bool
-   onConfigure();
+    bool
+    onConfigure();
 
-   bool
-   onPrepareMW();
+    bool
+    onPrepareMW();
 
-   bool
-   onLoop();
+    bool
+    onLoop();
 
-   static bool
-   setpoint_callback(
-      const core::common_msgs::Float32& msg,
-      void*                             context
-   );
+    static bool
+    setpoint_callback(
+        const core::common_msgs::Float32& msg,
+        void*                             context
+    );
 
-   static bool
-   measure_callback(
-      const core::common_msgs::Float32& msg,
-      void*                             context
-   );
+    static bool
+    measure_callback(
+        const core::common_msgs::Float32& msg,
+        void*                             context
+    );
 
 
 private:
-   core::mw::Subscriber<core::common_msgs::Float32, 5> _setpoint_subscriber;
-   core::mw::Subscriber<core::common_msgs::Float32, 5> _measure_subscriber;
-   core::mw::Publisher<core::common_msgs::Float32>     _output_publisher;
-   float _setpoint;
-   core::os::Time _setpoint_timestamp;
-   float          _measure;
+    core::mw::Subscriber<core::common_msgs::Float32, 5> _setpoint_subscriber;
+    core::mw::Subscriber<core::common_msgs::Float32, 5> _measure_subscriber;
+    core::mw::Publisher<core::common_msgs::Float32>     _output_publisher;
+    float _setpoint;
+    core::os::Time _setpoint_timestamp;
+    float          _measure;
 };
 }
