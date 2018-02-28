@@ -8,6 +8,8 @@
 
 #include <float.h>
 
+#include <core/os/SysLock.hpp>
+
 class PID
 {
 private:
@@ -37,6 +39,11 @@ public:
 
     inline void
     set(
+        float setpoint
+    );
+
+    inline void
+    setI(
         float setpoint
     );
 
@@ -71,7 +78,7 @@ PID::config(
     float max = FLT_MAX
 )
 {
-    chSysLock();
+    core::os::SysLock::Scope lock;
     _k   = k;
     _ki  = (ti == 0) ? 0 : k * (ts / ti);
     _kd  = k * (td / ts);
@@ -79,7 +86,6 @@ PID::config(
     _max = max;
     _i   = 0;
     _d   = 0;
-    chSysUnlock();
 }
 
 void
@@ -87,18 +93,24 @@ PID::set(
     float setpoint
 )
 {
-    chSysLock();
+    core::os::SysLock::Scope lock;
 
-    // Reset integral and derivative components if sign has changed or setpoint is 0
+    setI(setpoint);
+}
+
+void
+PID::setI(
+    float setpoint
+)
+{
+     // Reset integral and derivative components if sign has changed or setpoint is 0
     if ((setpoint > 0) != (_setpoint > 0)) {
         _i = 0;
         _d = 0;
     }
 
     _setpoint = setpoint;
-    chSysUnlock();
 }
-
 float
 PID::update(
     float measure
